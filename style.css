@@ -1,0 +1,392 @@
+:root {
+    --primary-color: #ff4757;
+    --text-color: #2f3542;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Background Animation - Removed based on feedback */
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    z-index: -2;
+    /* transition: transform 0.5s; Removed breathing animation */
+}
+
+/* Wind Container - Replaces Petals */
+#petals-container {
+    /* Keeping ID for JS simplicity or renaming? Let's keep ID but repurpose content */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.wind-line {
+    position: absolute;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.4) 50%, rgba(255, 255, 255, 0) 100%);
+    height: 2px;
+    /* Thin line */
+    border-radius: 2px;
+    opacity: 0;
+    transform: translateX(-100%);
+    animation: blow 3s linear forwards;
+}
+
+@keyframes blow {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%) translateY(0);
+    }
+
+    10% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.8;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(100vw) translateY(10px);
+        /* Slight dip */
+    }
+}
+
+/* Foreground Garden */
+/* Dynamic Garden Patch */
+.flower-patch {
+    position: fixed;
+    bottom: -10%;
+    /* Allow some variety below screen */
+    background-image: url('foreground_flowers.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: bottom center;
+    pointer-events: none;
+    transform-origin: bottom center;
+    opacity: 0;
+    /* Fade in on creation */
+    animation: growIn 1s ease-out forwards, sway var(--sway-duration, 5s) ease-in-out infinite alternate;
+}
+
+@keyframes growIn {
+    to {
+        opacity: var(--final-opacity, 1);
+    }
+}
+
+@keyframes sway {
+    0% {
+        transform: rotate(var(--sway-start, -1deg));
+    }
+
+    100% {
+        transform: rotate(var(--sway-end, 1deg));
+    }
+}
+
+/* Wind Swirl Effect */
+.wind-swirl {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    border-top-color: transparent;
+    opacity: 0;
+    animation: swirl-move 4s linear forwards;
+}
+
+@keyframes swirl-move {
+    0% {
+        opacity: 0;
+        transform: translateX(-10vw) translateY(0) rotate(0deg) scale(0.5);
+    }
+
+    10% {
+        opacity: 0.6;
+    }
+
+    80% {
+        opacity: 0.6;
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateX(110vw) translateY(-20px) rotate(720deg) scale(1.2);
+    }
+}
+
+/* Glass Card Styling */
+/* Card Container */
+/* Card Container */
+.card-container {
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    animation: fadeInOverlay 0.5s ease-out forwards;
+    /* Flexbox centering */
+    display: none;
+    /* managed by JS */
+    justify-content: center;
+    align-items: center;
+}
+
+@keyframes fadeInOverlay {
+    from {
+        opacity: 0;
+        backdrop-filter: blur(0px);
+    }
+
+    to {
+        opacity: 1;
+        backdrop-filter: blur(3px);
+    }
+}
+
+/* Card Style */
+.card {
+    position: relative;
+    /* Changed from absolute for Flexbox */
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 25px;
+    padding: 3rem 2rem;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 450px;
+
+    /* Animation Initial State */
+    opacity: 0;
+}
+
+/* New Animation Class applied by JS */
+.card.visible {
+    animation: magicalBloom 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes magicalBloom {
+    0% {
+        opacity: 0;
+        /* Start small and rotated, no translation needed */
+        transform: translateY(50px) scale(0.1) rotate(-15deg);
+    }
+
+    60% {
+        opacity: 1;
+        /* Bounce past final size */
+        transform: translateY(0) scale(1.05) rotate(3deg);
+    }
+
+    100% {
+        opacity: 1;
+        /* Settle */
+        transform: translateY(0) scale(1) rotate(0deg);
+    }
+}
+
+.card-content h1 {
+    font-family: 'Dancing Script', cursive;
+    color: #e84118;
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);
+}
+
+.card-content p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: var(--text-color);
+    margin-bottom: 0.5rem;
+}
+
+.signature {
+    font-family: 'Dancing Script', cursive;
+    font-size: 1.8rem !important;
+    text-align: right;
+    margin-top: 1rem;
+    color: #e84118;
+}
+
+/* Text Animations */
+.animate-title {
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards 1.2s;
+}
+
+.animate-text {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-1 {
+    animation-delay: 1.8s;
+}
+
+.delay-2 {
+    animation-delay: 2.2s;
+}
+
+.delay-3 {
+    animation-delay: 2.8s;
+}
+
+@keyframes slideUpFade {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .card-content h1 {
+        font-size: 2.2rem;
+    }
+
+    .card {
+        padding: 2rem 1.5rem;
+    }
+
+    /* Mobile Garden Fixes */
+    .flower-patch {
+        min-width: 300px;
+        width: 100% !important;
+        background-size: auto 100%;
+    }
+}
+
+/* Special Interactive Flower */
+.special-flower {
+    position: fixed;
+    bottom: -5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 250px;
+    height: 60vh;
+    background-image: url('tulip_red.png');
+    /* Distinct red tulip */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+    z-index: 100;
+    /* Highest priority */
+    cursor: pointer;
+    filter: drop-shadow(0 0 15px rgba(255, 223, 0, 0.6));
+    /* Gold glow */
+    animation: sway 6s ease-in-out infinite alternate, glowPulse 2s infinite alternate;
+    transition: transform 0.3s;
+}
+
+.special-flower:hover {
+    transform: translateX(-50%) scale(1.05);
+    /* Slight zoom on hover */
+}
+
+@keyframes glowPulse {
+    from {
+        filter: drop-shadow(0 0 10px rgba(255, 223, 0, 0.5));
+    }
+
+    to {
+        filter: drop-shadow(0 0 25px rgba(255, 223, 0, 0.9));
+    }
+}
+
+/* Click Hint Arrow */
+.click-hint {
+    position: absolute;
+    top: 20%;
+    /* Position above the flower bud */
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    pointer-events: none;
+    /* Let clicks pass through to flower */
+    opacity: 1;
+    transition: opacity 0.5s;
+}
+
+.click-hint span {
+    display: block;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.arrow-icon {
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 15px solid white;
+    margin: 0 auto;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.3));
+    animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(10px);
+    }
+}
